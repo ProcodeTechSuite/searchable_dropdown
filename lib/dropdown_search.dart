@@ -11,6 +11,7 @@ import 'src/properties/dropdown_decorator_props.dart';
 import 'src/properties/popup_props.dart';
 import 'src/widgets/popupMenu.dart';
 import 'src/widgets/selection_widget.dart';
+import 'package:insurance_app/core/reusable_widgets/cw_text.dart';
 
 export 'src/properties/bottom_sheet_props.dart';
 export 'src/properties/clear_button_props.dart';
@@ -181,6 +182,8 @@ class DropdownSearch<T> extends StatefulWidget {
     this.compareFn,
     this.onBeforeChange,
     this.onBeforePopupOpening,
+    this.maxLines = 1,
+    this.selectedItemTextPadding,
     PopupProps<T> popupProps = const PopupProps.menu(),
   })  : assert(
           !popupProps.showSelectedItems || T == String || compareFn != null,
@@ -216,6 +219,8 @@ class DropdownSearch<T> extends StatefulWidget {
     BeforePopupOpeningMultiSelection<T>? onBeforePopupOpening,
     FormFieldValidator<List<T>>? validator,
     DropdownSearchBuilderMultiSelection<T>? dropdownBuilder,
+    this.maxLines = 1,
+    this.selectedItemTextPadding,
   })  : assert(
           !popupProps.showSelectedItems || T == String || compareFn != null,
         ),
@@ -236,13 +241,16 @@ class DropdownSearch<T> extends StatefulWidget {
         super(key: key);
 
   @override
-  DropdownSearchState<T> createState() => DropdownSearchState<T>();
+  DropdownSearchState<T> createState() => DropdownSearchState<T>(maxLines);
 }
 
 class DropdownSearchState<T> extends State<DropdownSearch<T>> {
   final ValueNotifier<List<T>> _selectedItemsNotifier = ValueNotifier([]);
   final ValueNotifier<bool> _isFocused = ValueNotifier(false);
   final _popupStateKey = GlobalKey<SelectionWidgetState<T>>();
+  final maxLines;
+
+  DropdownSearchState(this.maxLines);
 
   @override
   void initState() {
@@ -356,8 +364,15 @@ class DropdownSearchState<T> extends State<DropdownSearch<T>> {
               .toList(),
         );
       }
-      return Text(_selectedItemAsString(getSelectedItem),
-          style: Theme.of(context).textTheme.subtitle1);
+      return Padding(
+        child: Text(
+        _selectedItemAsString(getSelectedItem),
+        maxLines: maxLines,
+        overflow: TextOverflow.ellipsis,
+        style: CWTextStyle(CWTextTypes.inputText, context),
+          ),
+        padding: widget.selectedItemTextPadding??EdgeInsets.zero,
+      );
     }
 
     return selectedItemWidget();
