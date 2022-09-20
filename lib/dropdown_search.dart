@@ -162,6 +162,14 @@ class DropdownSearch<T> extends StatefulWidget {
   ///a callBack will be called before opening le popup
   ///if the callBack return FALSE, the opening of the popup will be cancelled
   final BeforePopupOpeningMultiSelection<T>? onBeforePopupOpeningMultiSelection;
+  
+  /// applies maxlines to selected item
+  int maxLines;
+  
+  /// text style of selected item
+  TextStyle? selectedItemTextStyle;
+  
+  EdgeInsets? selectedItemTextPadding;
 
   DropdownSearch({
     Key? key,
